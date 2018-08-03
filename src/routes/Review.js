@@ -2,17 +2,17 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Card, Row, Col } from 'antd'
 import _ from 'lodash'
-
+import { translate } from "react-i18next";
 export class Review extends Component {
   render() {
-
+      let {t} = this.props
       let { meal, number_people, restaurant, orderList} = this.props.order.activeRecord
 
     return (
-        <Card title="Review" style={{ flex: 1 }}>
+        <Card title={t('Review')} style={{ flex: 1 }}>
             <Row>
                 <Col span={4} offset={4}>
-                    <p style={{fontSize:15}} >Meal:</p>
+                    <p style={{ fontSize: 15 }} >{t("Meal")}:</p>
                 </Col>
                 <Col span={4}>
                     <h3>{meal}</h3>
@@ -20,7 +20,7 @@ export class Review extends Component {
             </Row>
             <Row>
                 <Col span={4} offset={4}>
-                    <p style={{ fontSize: 15 }} >No. of People:</p>
+                    <p style={{ fontSize: 15 }} >{t("No. of People")}:</p>
                 </Col>
                 <Col span={4}>
                     <h3>{number_people}</h3>
@@ -28,7 +28,7 @@ export class Review extends Component {
             </Row>
             <Row>
                 <Col span={4} offset={4}>
-                    <p style={{ fontSize: 15 }} >Restaurant:</p>
+                    <p style={{ fontSize: 15 }} >{t("Restaurant")}:</p>
                 </Col>
                 <Col span={4}>
                     <h3>{restaurant}</h3>
@@ -36,14 +36,14 @@ export class Review extends Component {
             </Row>
             <Row>
                 <Col span={4} offset={4}>
-                    <p style={{ fontSize: 15 }} >Dishes:</p>
+                    <p style={{ fontSize: 15 }} >{t("Dishes")}:</p>
                 </Col>
                 <Col span={12}>
                     <table style={{ width: '100%', textAlign: 'center' }} border={1} >
                         <thead>
                             <tr>
-                                <th>Dish</th>
-                                <th>No. Serving</th>
+                                <th>{t("Dishes")}</th>
+                                <th>{t("No. Serving")}</th>
                             </tr>
                         </thead>
 
@@ -76,6 +76,4 @@ export class Review extends Component {
 const mapStateToProps = (state) => ({
   order:state.order
 })
-
-
-export default connect(mapStateToProps)(Review)
+export default connect(mapStateToProps)(translate("translations")(Review))

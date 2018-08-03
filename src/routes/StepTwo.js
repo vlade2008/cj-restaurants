@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'dva';
 import { Card, Select,Form } from 'antd'
 import _ from 'lodash'
-
+import { translate } from "react-i18next";
 import { isValidateStatus, isValidateStatusNumberPeople } from '../utils/isValidation'
 
 const Option = Select.Option;
@@ -15,10 +15,11 @@ class StepTwo extends Component {
         return (e) => {
             let payload = {}
             let {number_people,meal} = this.props.order.activeRecord
+            let {t} = this.props
 
-            let data_restaurant = isValidateStatus(e, name, 'No Selected', ['validation_restaurant','message_restaurant'])
+            let data_restaurant = isValidateStatus(e, name, t('No Selected'), ['validation_restaurant','message_restaurant'])
             let data_number_people = isValidateStatusNumberPeople(number_people,'number_people')
-            let data_meal = isValidateStatus(meal, 'meal', 'No Selected', ['validation_meal', 'message_meal'])
+            let data_meal = isValidateStatus(meal, 'meal', t('No Selected'), ['validation_meal', 'message_meal'])
 
             payload = {
                 ...data_restaurant, ...data_number_people, ...data_meal, orderList:[]
@@ -37,6 +38,8 @@ class StepTwo extends Component {
             wrapperCol: { span: 5 },
         };
 
+        let {t} = this.props
+
         let { validation_restaurant, message_restaurant, restaurant,meal } = this.props.order.activeRecord
 
         let dishFiltered = []
@@ -47,10 +50,10 @@ class StepTwo extends Component {
             }
         })
         return (
-            <Card title="Step 2" style={{ flex: 1 }}>
+            <Card title={t('Step 2')} style={{ flex: 1 }}>
                 <Form layout='vertical'>
                     <div>
-                        <FormItem {...formItemLayout} label="Please Select a Restaurant" validateStatus={validation_restaurant} help={message_restaurant}>
+                        <FormItem {...formItemLayout} label={t('Please Select a Restaurant')} validateStatus={validation_restaurant} help={message_restaurant}>
                             <Select value={restaurant || '---'} onChange={this.handleChangeForm('restaurant')} >
                                 
                                 {
@@ -78,7 +81,6 @@ const mapStateToProps = (state) => ({
     order: state.order
 })
 
-
-export default connect(mapStateToProps)(StepTwo)
+export default connect(mapStateToProps)(translate("translations")(StepTwo))
 
 

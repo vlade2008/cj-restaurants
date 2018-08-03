@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
 import { List,  Row, Col } from 'antd';
+import { translate } from "react-i18next";
 import _ from 'lodash'
 
 function OrderList(props) {
-    console.log(props,'unsa naa ane niya gd')
+    const { t} = props;
     return (
         <List
             itemLayout="vertical"
@@ -16,24 +17,24 @@ function OrderList(props) {
                     <Row>
                         <Col span={6} offset={2}  >
                             <Row>
-                                <Col span={4} offset={2}>
-                                    <p style={{ fontSize: 15 }} >Meal:</p>
+                                <Col span={10} offset={1}>
+                                    <p style={{ fontSize: 15 }} >{t("Meal")}:</p>
                                 </Col>
                                 <Col span={8} offset={4}>
                                     <h3>{item.meal}</h3>
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span={4} offset={2}>
-                                    <p style={{ fontSize: 15 }} >No. of People:</p>
+                                <Col span={10} offset={1}>
+                                    <p style={{ fontSize: 15 }} >{t("No. of People")}:</p>
                                 </Col>
                                 <Col span={8} offset={4}>
                                     <h3>{item.number_people}</h3>
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span={4} offset={2}>
-                                    <p style={{ fontSize: 15 }} >Restaurant:</p>
+                                <Col span={10} offset={1}>
+                                    <p style={{ fontSize: 15 }} >{t("Restaurant")}:</p>
                                 </Col>
                                 <Col span={8} offset={4}>
                                     <h3>{item.restaurant}</h3>
@@ -43,12 +44,12 @@ function OrderList(props) {
                         <Col span={6} offset={2} >
                             <Row>
                                 <Col span={18} >
-                                    <p style={{ fontSize: 15 }} >Dishes:</p>
+                                    <p style={{ fontSize: 15 }} >{t("Dishes")}:</p>
                                     <table style={{ width: '100%', textAlign: 'center' }} border={1} >
                                         <thead>
                                             <tr>
-                                                <th>Dish</th>
-                                                <th>No. Serving</th>
+                                                <th>{t("Dishes")}</th>
+                                                <th>{t("No. Serving")}</th>
                                             </tr>
                                         </thead>
 
@@ -86,4 +87,5 @@ const mapStateToProps = (state) => ({
     order: state.order
 })
 
-export default connect(mapStateToProps)(OrderList);
+
+export default connect(mapStateToProps)(translate("translations")(OrderList))

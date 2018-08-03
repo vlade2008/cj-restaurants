@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'dva';
 import { Card, Select, InputNumber, Form } from 'antd'
+import { translate } from "react-i18next";
 
 import { isValidateStatusNumberPeople, isValidateStatus} from '../utils/isValidation'
 
@@ -11,14 +12,15 @@ class StepOne extends Component {
     handleChangeForm = (name) =>{
         return (e) =>{
             let payload = {}
+            let {t} = this.props
 
             if(name === 'number_people'){
-                let data = isValidateStatusNumberPeople(e, name)
+                let data = isValidateStatusNumberPeople(e, name,this.props.t)
                 payload = {
                     ...data
                 }
             }else{
-                let data = isValidateStatus(e, name, 'No Selected', ['validation_meal', 'message_meal'])
+                let data = isValidateStatus(e, name, t('No Selected'), ['validation_meal', 'message_meal'])
                 let { number_people, validation_number_people, message_number_people } = this.props.order.activeRecord
                 payload = {
                     ...data, number_people, validation_number_people, message_number_people, orderList:[]
@@ -37,16 +39,17 @@ class StepOne extends Component {
         const formItemLayout = {
             wrapperCol: { span: 5 },
         };
+        const { t } = this.props;
 
         let { validation_number_people, message_number_people,
             message_meal, validation_meal,
              meal, number_people } = this.props.order.activeRecord
 
         return (
-            <Card title="Step 1" style={{ flex: 1 }}>
+            <Card title={t('Step 1')} style={{ flex: 1 }}>
                 <Form layout='vertical'>
                     <div>
-                        <FormItem {...formItemLayout} label="Please Select a meal" validateStatus={validation_meal} help={message_meal}>
+                        <FormItem {...formItemLayout} label={t('Please Select a meal')} validateStatus={validation_meal} help={message_meal}>
                             <Select  value={meal || '---'} onChange={this.handleChangeForm('meal')} >
                                 <Option value="lunch">lunch</Option>
                                 <Option value="dinner">dinner</Option>
@@ -57,7 +60,7 @@ class StepOne extends Component {
                     </div>
                     
                     <div style={{marginTop:20}}>
-                        <FormItem {...formItemLayout} label="Please Enter Number of people" validateStatus={validation_number_people} help={message_number_people}>
+                        <FormItem {...formItemLayout} label={t('Please Enter Number of people')} validateStatus={validation_number_people} help={message_number_people}>
                             <InputNumber value={number_people || 0} onChange={this.handleChangeForm('number_people')} />
                         </FormItem>
                     </div>
@@ -70,8 +73,4 @@ class StepOne extends Component {
 const mapStateToProps = (state) => ({
     order:state.order
 })
-
-
-export default connect(mapStateToProps)(StepOne)
-
-
+export default connect(mapStateToProps)(translate("translations")(StepOne))

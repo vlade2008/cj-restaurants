@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'dva';
 import { Card, Select, Form, InputNumber, Button, Icon, Modal} from 'antd'
 import _ from 'lodash'
+import { translate } from "react-i18next";
 
  import { isValidateStatus } from '../utils/isValidation'
 
@@ -28,10 +29,10 @@ class StepThree extends Component {
     }
 
     handleAddOrder = () =>{
-
+        let {t} = this.props
         
-        let data_dish = isValidateStatus(this.state.dish, 'dish', 'No Selected', ['validation_dish', 'message_dish'])
-        let data_serving = isValidateStatus(this.state.serving, 'serving', 'Please input a number', ['validation_serving', 'message_serving'])
+        let data_dish = isValidateStatus(this.state.dish, 'dish', t('No Selected'), ['validation_dish', 'message_dish'])
+        let data_serving = isValidateStatus(this.state.serving, 'serving', t('Please input a number') , ['validation_serving', 'message_serving'])
         
         this.setState({
             ...data_dish, ...data_serving
@@ -49,9 +50,8 @@ class StepThree extends Component {
     }
 
     checkOrder = (data) =>{
+        let {t} = this.props
         let cloneOrderList = _.clone(this.props.order.activeRecord.orderList)
-        
-
         let isDuplicate = _.filter(cloneOrderList, _.matches({ dish: data.dish }))
 
         if (isDuplicate.length === 0){
@@ -72,8 +72,8 @@ class StepThree extends Component {
            })
         }else{
             Modal.warning({
-                title: 'Warning',
-                content: 'Cannot select the same dish twice!',
+                title: t('Warning'),
+                content: t('Cannot select the same dish twice!') ,
             });
         }
 
@@ -102,6 +102,7 @@ class StepThree extends Component {
     }
 
     render() {
+        let {t} = this.props
         let {  restaurant, meal, orderList } = this.props.order.activeRecord
         let { dish, serving, validation_dish, message_dish, validation_serving, message_serving } = this.state
 
@@ -114,11 +115,11 @@ class StepThree extends Component {
             }
         })
         return (
-            <Card title="Step 3" style={{ flex: 1 }}>
+            <Card title={t('Step 3')} style={{ flex: 1 }}>
                 <Form layout='inline'>
                     <div>
                         <FormItem validateStatus={validation_dish} help={message_dish}>
-                            <h3>Please Select a Dish</h3>
+                            <h3> {t('Please Select a Dish')} </h3>
                             <Select value={dish || '---'} onChange={this.handleChangeForm('dish')} >
 
                                 {
@@ -135,20 +136,20 @@ class StepThree extends Component {
                         </FormItem>
 
                         <FormItem validateStatus={validation_serving} help={message_serving} style={{marginLeft:20}}>
-                            <h3>Please enter no. of servings</h3>
+                            <h3>{t('Please enter no. of servings')}</h3>
                             <InputNumber value={serving} onChange={this.handleChangeForm('serving')}  />
                             <Button onClick={this.handleAddOrder} style={{ border: 'none' }} ><Icon style={{ fontSize: 24, color: '#1890ff' }} type="plus-circle-o" /></Button>
                         </FormItem>
                         
                     </div>
                 </Form>
-                <h3 style={{ marginTop: 10 }} >List of Order</h3>
+                <h3 style={{ marginTop: 10 }} >{t('List of Order')}</h3>
                 <table style={{ width: '100%',textAlign:'center'}} border={1} >
                     <thead>
                         <tr>
-                            <th>Dish</th>
-                            <th>No. Serving</th>
-                            <th>Action</th>
+                            <th>{t('Dish')}</th>
+                            <th>{t('No. Serving')}</th>
+                            <th>{t('Action')}</th>
                         </tr>
                     </thead>
                     
@@ -168,7 +169,7 @@ class StepThree extends Component {
                                 )
                             }) : (
                                     <tr >
-                                        <td colSpan={3} >No Data</td>
+                                        <td colSpan={3} >{t('No Data')}</td>
                                     </tr>
                             )
                         }
@@ -186,8 +187,5 @@ class StepThree extends Component {
 const mapStateToProps = (state) => ({
     order: state.order
 })
-
-
-export default connect(mapStateToProps)(StepThree)
-
+export default connect(mapStateToProps)(translate("translations")(StepThree))
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'dva';
 import { Steps, Button, Modal } from 'antd';
 import _ from 'lodash'
-
+import { translate } from "react-i18next";
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import StepThree from './StepThree'
@@ -31,13 +31,13 @@ class OrderForm extends Component {
 
     handleNext = () =>{
         const current = this.state.current + 1
-
+        let {t} = this.props
         let { meal, number_people, restaurant,orderList} = this.props.order.activeRecord
 
         switch(current){
             case 1:
-                let data_meal = isValidateStatus(meal, 'meal', 'No Selected', ['validation_meal','message_meal'])
-                let data_number_people = isValidateStatusNumberPeople(number_people, 'number_people')
+                let data_meal = isValidateStatus(meal, 'meal', t('No Selected'), ['validation_meal','message_meal'])
+                let data_number_people = isValidateStatusNumberPeople(number_people, 'number_people',this.props.t)
                 let payload = {...data_meal,...data_number_people}
                 if (data_meal.validation_meal === 'success' && data_number_people.validation_number_people === 'success'){
                     this.next(current)
@@ -48,7 +48,7 @@ class OrderForm extends Component {
                 })
                 break;
             case 2:
-                let data_restaurant = isValidateStatus(restaurant, 'restaurant', 'No Selected', ['validation_restaurant','message_restaurant'])
+                let data_restaurant = isValidateStatus(restaurant, 'restaurant', t('No Selected'), ['validation_restaurant','message_restaurant'])
                 if (data_restaurant.validation_restaurant === 'success') {
                     this.next(current)
                 }
@@ -60,8 +60,8 @@ class OrderForm extends Component {
             case 3:
                 if (orderList.length === 0){
                     Modal.warning({
-                        title: 'Warning',
-                        content: 'Please select a order!',
+                        title: t('Warning'),
+                        content: t('Please select a order!'),
                     });
                 }else{
                     this.next(current)
@@ -147,11 +147,12 @@ class OrderForm extends Component {
 
 
   render() {
+      const { t } = this.props;
       const steps = [
-          { title: 'Step 1' },
-          { title: 'Step 2' },
-          { title: 'Step 3' },
-          { title: 'Review' },
+          { title: t("Step 1") },
+          { title: t("Step 2") },
+          { title: t("Step 3") },
+          { title: t("Review") },
       ];
     return (
         <div className={styles.normal}>
@@ -180,7 +181,7 @@ class OrderForm extends Component {
                         {
                             this.state.current !== 0 ? (
                                 <Button type="primary" onClick={this.prev} >
-                                    Previous
+                                    {t("Previous")}
                             </Button>
                             ) : null
                         }
@@ -191,11 +192,11 @@ class OrderForm extends Component {
                         {
                             this.state.current === 3 ? (
                                 <Button type="primary" style={{ marginLeft: 5 }} onClick={this.onSubmit}  >
-                                    Submit
+                                    {t("Submit")}
                                 </Button>
                             ): (
                                 <Button type="primary" style={{ marginLeft: 5 }} onClick={this.handleNext} >
-                                    Next
+                                        {t("Next")}
                                 </Button>
                             )
                         }
@@ -212,4 +213,4 @@ const mapStateToProps = (state) => ({
   order:state.order
 })
 
-export default connect(mapStateToProps)(OrderForm)
+export default connect(mapStateToProps)(translate("translations")(OrderForm))

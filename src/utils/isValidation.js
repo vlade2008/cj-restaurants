@@ -20,18 +20,18 @@ export const isValidateStatus = (value, name,message,schema) => {
     return payload
 }
 
-export const isValidateStatusNumberPeople = (value,name) => {
+export const isValidateStatusNumberPeople = (value,name,t) => {
 
     let payload = {}
     if (value < 0 || (_.isEmpty(value) && !value )) {
         payload = {
             validation_number_people: 'error',
-            message_number_people: 'Please input a number'
+            message_number_people: t('Please input a number')
         }
     } else if (value > 10) {
         payload = {
             validation_number_people: 'error',
-            message_number_people: 'Maximum 10'
+            message_number_people: t('Maximum 10')
         }
     } else {
         payload = {
