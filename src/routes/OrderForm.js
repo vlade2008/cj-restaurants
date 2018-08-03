@@ -70,13 +70,29 @@ class OrderForm extends Component {
 				})
 				break
 			case 3:
-				if (orderList.length === 0) {
-					Modal.warning({
-						title: t('Warning'),
-						content: t('Please select a order!'),
-					})
-				} else {
-					this.next(current)
+				if (orderList.length !== 0) {
+
+                    let total_order = 0
+                    _.map(orderList, item => {
+                        total_order = total_order + item.serving
+                    })
+
+
+                    if (total_order >= number_people && total_order <= 10 ){
+                        this.next(current)
+                    }else{
+                        Modal.warning({
+                            title: t('Warning'),
+                            content: t('Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!'),
+                        })
+                    }
+                    
+					
+				} else  {
+                    Modal.warning({
+                        title: t('Warning'),
+                        content: t('Please select a order!'),
+                    })
 				}
 
 				break

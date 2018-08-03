@@ -126,6 +126,11 @@ class StepThree extends Component {
 		} = this.state
 
 		let dishFiltered = []
+		let total_order = 0
+
+		_.map(orderList,item =>{
+			total_order = total_order + item.serving
+		})
 
 		_.map(dataDishes.dishes, item => {
 			let restaurantValue = restaurant.split('-')
@@ -182,31 +187,38 @@ class StepThree extends Component {
 
 					<tbody>
 						{!_.isEmpty(orderList) ? (
-							_.map(orderList, (item, i) => {
-								let dishSplit = item.dish.split('-')
-								return (
-									<tr key={i}>
-										<td>{dishSplit[0]}</td>
-										<td>{item.serving} </td>
-										<td>
-											<Button
-												style={{ border: 'none' }}
-												onClick={this.onRemove(item)}
-											>
-												<Icon
-													type="close-circle"
-													style={{ fontSize: 24, color: '#f81d22' }}
-												/>
-											</Button>
-										</td>
-									</tr>
-								)
-							})
+							[
+								_.map(orderList, (item, i) => {
+									let dishSplit = item.dish.split('-')
+									return (
+										<tr key={i}>
+											<td>{dishSplit[0]}</td>
+											<td>{item.serving} </td>
+											<td>
+												<Button
+													style={{ border: 'none' }}
+													onClick={this.onRemove(item)}
+												>
+													<Icon
+														type="close-circle"
+														style={{ fontSize: 24, color: '#f81d22' }}
+													/>
+												</Button>
+											</td>
+										</tr>
+									)
+								}),
+								<tr key="total">
+									<td colSpan={2}></td>
+									<td>{t('Total')}: <b>{total_order} </b></td>
+								</tr>
+								]
 						) : (
 							<tr>
 								<td colSpan={3}>{t('No Data')}</td>
 							</tr>
 						)}
+						
 					</tbody>
 				</table>
 			</Card>
