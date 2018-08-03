@@ -4,15 +4,7 @@ export default {
     namespace: 'order',
     state: {
         activeRecord:{
-            meal: "lunch",
-            validation_meal:'success',
-            number_people:1,
-            validation_number_people:'success',
-            validation_restaurant:'success',
-            restaurant:'Mc Donalds-1',
-            orderList:[
-                { dish_value: 'Chicken Burger-1', serving_value:1}
-            ]
+            orderList:[]
         },
         record:[]
     },
@@ -46,6 +38,11 @@ export default {
                 record: {
                     $set: payload,
                 },
+                activeRecord:{
+                    $set:{
+                        orderList: []
+                    }
+                }
             })
         },
     },
@@ -56,8 +53,9 @@ export default {
             yield put({ type: 'updateFormInputSuccess', payload, reset });
             if(callback)callback()
         },
-        *updateRecord({ payload }, { call, put }) { 
+        *updateRecord({ payload,callback = null }, { call, put }) { 
             yield put({ type: 'updateRecordSuccess', payload });
+            if(callback)callback()
         },
     },
 

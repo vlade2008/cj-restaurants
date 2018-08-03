@@ -3,7 +3,7 @@ import _ from 'lodash'
 export const isValidateStatus = (value, name,message,schema) => {
 
     let payload = {}
-    if (!_.isEmpty(value) || (typeof value === 'number' && value !== 0)) {
+    if ((typeof value === 'string' && !_.isEmpty(value)) || (typeof value === 'number' && value > 0)) {
         payload = {
             [schema[0]]: 'success',
             [schema[1]]: ''
@@ -23,7 +23,7 @@ export const isValidateStatus = (value, name,message,schema) => {
 export const isValidateStatusNumberPeople = (value,name) => {
 
     let payload = {}
-    if (value === 0 || (_.isEmpty(value) && !value )) {
+    if (value < 0 || (_.isEmpty(value) && !value )) {
         payload = {
             validation_number_people: 'error',
             message_number_people: 'Please input a number'

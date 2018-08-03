@@ -14,8 +14,8 @@ class StepThree extends Component {
         super(props)
 
         this.state = {
-            dish_value:'',
-            serving_value:1
+            dish:'',
+            serving:1
         }
     }
 
@@ -30,16 +30,16 @@ class StepThree extends Component {
     handleAddOrder = () =>{
 
         
-        let data_dish_value = isValidateStatus(this.state.dish_value, 'dish_value', 'No Selected', ['validation_dish_value', 'message_dish_value'])
-        let data_serving_value = isValidateStatus(this.state.serving_value, 'serving_value', 'No Selected', ['validation_serving_value', 'message_serving_value'])
+        let data_dish = isValidateStatus(this.state.dish, 'dish', 'No Selected', ['validation_dish', 'message_dish'])
+        let data_serving = isValidateStatus(this.state.serving, 'serving', 'Please input a number', ['validation_serving', 'message_serving'])
         
         this.setState({
-            ...data_dish_value, ...data_serving_value
+            ...data_dish, ...data_serving
         },()=>{
-            if (data_dish_value.validation_dish_value === 'success' && data_serving_value.validation_serving_value === 'success') {
+            if (data_dish.validation_dish === 'success' && data_serving.validation_serving === 'success') {
                 let payload = {
-                    dish_value: this.state.dish_value,
-                    serving_value: this.state.serving_value
+                    dish: this.state.dish,
+                    serving: this.state.serving
                 }
                 this.checkOrder(payload)
             }
@@ -52,7 +52,7 @@ class StepThree extends Component {
         let cloneOrderList = _.clone(this.props.order.activeRecord.orderList)
         
 
-        let isDuplicate = _.filter(cloneOrderList, _.matches({ dish_value: data.dish_value }))
+        let isDuplicate = _.filter(cloneOrderList, _.matches({ dish: data.dish }))
 
         if (isDuplicate.length === 0){
             cloneOrderList.push(data)
@@ -62,8 +62,8 @@ class StepThree extends Component {
             }
 
            this.setState({
-               dish_value: '',
-               serving_value: 1
+               dish: '',
+               serving: 1
            },()=>{
                this.props.dispatch({
                    type: 'order/updateFormInput',
@@ -77,13 +77,33 @@ class StepThree extends Component {
             });
         }
 
-        
+    }
+
+    onRemove = (data) =>{
+        return ()=>{
+            let cloneOrderList = _.clone(this.props.order.activeRecord.orderList)
+            let newArray = _.filter(cloneOrderList, (o) => {
+                if (!_.includes(o.dish, data.dish)) {
+                    return o
+                }
+            })
+            let payload  = {
+                orderList: newArray
+            }
+
+            this.props.dispatch({
+                type: 'order/updateFormInput',
+                payload,
+            })
+
+
+        }
 
     }
 
     render() {
         let {  restaurant, meal, orderList } = this.props.order.activeRecord
-        let { dish_value, serving_value, validation_dish_value, message_dish_value, validation_serving_value, message_serving_value } = this.state
+        let { dish, serving, validation_dish, message_dish, validation_serving, message_serving } = this.state
 
         let dishFiltered = []
 
@@ -97,9 +117,9 @@ class StepThree extends Component {
             <Card title="Step 3" style={{ flex: 1 }}>
                 <Form layout='inline'>
                     <div>
-                        <FormItem validateStatus={validation_dish_value} help={message_dish_value}>
+                        <FormItem validateStatus={validation_dish} help={message_dish}>
                             <h3>Please Select a Dish</h3>
-                            <Select value={dish_value || '---'} onChange={this.handleChangeForm('dish_value')} >
+                            <Select value={dish || '---'} onChange={this.handleChangeForm('dish')} >
 
                                 {
                                     _.map(dishFiltered, (item, i) => {
@@ -114,9 +134,9 @@ class StepThree extends Component {
                             </Select>
                         </FormItem>
 
-                        <FormItem validateStatus={validation_serving_value} help={message_serving_value} style={{marginLeft:20}}>
+                        <FormItem validateStatus={validation_serving} help={message_serving} style={{marginLeft:20}}>
                             <h3>Please enter no. of servings</h3>
-                            <InputNumber value={serving_value} onChange={this.handleChangeForm('serving_value')}  />
+                            <InputNumber value={serving} onChange={this.handleChangeForm('serving')}  />
                             <Button onClick={this.handleAddOrder} style={{ border: 'none' }} ><Icon style={{ fontSize: 24, color: '#1890ff' }} type="plus-circle-o" /></Button>
                         </FormItem>
                         
@@ -136,12 +156,13 @@ class StepThree extends Component {
                     <tbody>
                         {
                             !_.isEmpty(orderList) ? _.map(orderList,(item,i)=>{
+                                let dishSplit = item.dish.split('-')
                                 return (
                                     <tr key={i}>
-                                        <td>{item.dish_value}</td>
-                                        <td>{item.serving_value} </td>
+                                        <td>{dishSplit[0]}</td>
+                                        <td>{item.serving} </td>
                                         <td>
-                                            <Button style={{ border: 'none' }}><Icon type="close-circle" style={{ fontSize: 24, color: '#f81d22' }} /></Button>
+                                            <Button style={{ border: 'none' }} onClick={this.onRemove(item)} ><Icon type="close-circle" style={{ fontSize: 24, color: '#f81d22' }} /></Button>
                                         </td>
                                     </tr>
                                 )

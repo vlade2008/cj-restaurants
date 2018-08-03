@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'dva';
-import { Steps,Button } from 'antd';
+import { Steps, Button, Modal } from 'antd';
+import _ from 'lodash'
 
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
@@ -31,7 +32,7 @@ class OrderForm extends Component {
     handleNext = () =>{
         const current = this.state.current + 1
 
-        let { meal, number_people, restaurant} = this.props.order.activeRecord
+        let { meal, number_people, restaurant,orderList} = this.props.order.activeRecord
 
         switch(current){
             case 1:
@@ -55,6 +56,17 @@ class OrderForm extends Component {
                     type: 'order/updateFormInput',
                     payload: data_restaurant
                 })
+                break;
+            case 3:
+                if (orderList.length === 0){
+                    Modal.warning({
+                        title: 'Warning',
+                        content: 'Please select a order!',
+                    });
+                }else{
+                    this.next(current)
+                }
+                
                 break;
             default:
                 console.log('renderStepComponent error')
@@ -92,6 +104,45 @@ class OrderForm extends Component {
                 default:
                     console.log('renderStepComponent error')
             }
+    }
+
+    onSubmit = () =>{
+        let { meal, number_people, restaurant, orderList } = this.props.order.activeRecord
+        let cloneRecord = _.clone(this.props.order.record)
+
+        let splitRestaurant = restaurant.split('-')
+        
+        let newOrderList = orderList.map((item)=>{
+            let dish = item.dish.split('-')
+            return {
+                dish:dish[0],
+                serving:item.serving
+            }
+        })
+       
+       
+       
+       
+       
+        let payload = {
+            meal, number_people, restaurant: splitRestaurant[0], orderList: newOrderList
+        }
+        cloneRecord.push(payload)
+
+        this.props.dispatch({
+            type: 'order/updateRecord',
+            payload: cloneRecord,
+            callback: this.onResetValue
+        })
+
+    }
+
+    onResetValue = ()=>{
+        this.setState({
+            current:0
+        },()=>{
+            this.props.onChangeTab('2')
+        })
     }
 
 
@@ -139,7 +190,7 @@ class OrderForm extends Component {
 
                         {
                             this.state.current === 3 ? (
-                                <Button type="primary" style={{ marginLeft: 5 }}  >
+                                <Button type="primary" style={{ marginLeft: 5 }} onClick={this.onSubmit}  >
                                     Submit
                                 </Button>
                             ): (

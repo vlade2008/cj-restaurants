@@ -1,57 +1,89 @@
 import React from 'react';
 import { connect } from 'dva';
-import { List, Avatar, Icon } from 'antd';
+import { List,  Row, Col } from 'antd';
+import _ from 'lodash'
 
-
-const listData = [];
-for (let i = 0; i < 23; i++) {
-    listData.push({
-        href: 'http://ant.design',
-        title: `ant design part ${i}`,
-        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        description: 'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-        content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-    });
-}
-
-const IconText = ({ type, text }) => (
-    <span>
-        <Icon type={type} style={{ marginRight: 8 }} />
-        {text}
-    </span>
-);
-
-
-function OrderList() {
+function OrderList(props) {
+    console.log(props,'unsa naa ane niya gd')
     return (
         <List
             itemLayout="vertical"
             size="large"
-            pagination={{
-                onChange: (page) => {
-                    console.log(page);
-                },
-                pageSize: 3,
-            }}
-            dataSource={listData}
-            footer={<div><b>ant design</b> footer part</div>}
-            renderItem={item => (
-                <List.Item
-                    key={item.title}
-                    actions={[<IconText type="star-o" text="156" />, <IconText type="like-o" text="156" />, <IconText type="message" text="2" />]}
-                    extra={<img width={272} alt="logo" src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" />}
-                >
-                    <List.Item.Meta
-                        avatar={<Avatar src={item.avatar} />}
-                        title={<a href={item.href}>{item.title}</a>}
-                        description={item.description}
-                    />
-                    {item.content}
+            dataSource={props.order.record}
+            renderItem={(item,i) => (
+                <List.Item key={i}  >
+
+                    <Row>
+                        <Col span={6} offset={2}  >
+                            <Row>
+                                <Col span={4} offset={2}>
+                                    <p style={{ fontSize: 15 }} >Meal:</p>
+                                </Col>
+                                <Col span={8} offset={4}>
+                                    <h3>{item.meal}</h3>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={4} offset={2}>
+                                    <p style={{ fontSize: 15 }} >No. of People:</p>
+                                </Col>
+                                <Col span={8} offset={4}>
+                                    <h3>{item.number_people}</h3>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={4} offset={2}>
+                                    <p style={{ fontSize: 15 }} >Restaurant:</p>
+                                </Col>
+                                <Col span={8} offset={4}>
+                                    <h3>{item.restaurant}</h3>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col span={6} offset={2} >
+                            <Row>
+                                <Col span={18} >
+                                    <p style={{ fontSize: 15 }} >Dishes:</p>
+                                    <table style={{ width: '100%', textAlign: 'center' }} border={1} >
+                                        <thead>
+                                            <tr>
+                                                <th>Dish</th>
+                                                <th>No. Serving</th>
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+                                            {
+                                                _.map(item.orderList, (items, key) => {
+                                                    return (
+                                                        <tr key={key}>
+                                                            <td>{items.dish}</td>
+                                                            <td>{items.serving} </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+
+                                        </tbody>
+
+
+
+                                    </table>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    
+                    
                 </List.Item>
             )}
         />
     );
 }
 
+const mapStateToProps = (state) => ({
+    order: state.order
+})
 
-export default connect()(OrderList);
+export default connect(mapStateToProps)(OrderList);
