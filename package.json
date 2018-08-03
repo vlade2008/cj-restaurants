@@ -4,7 +4,8 @@
     "start": "roadhog server",
     "build": "roadhog build",
     "lint": "eslint --ext .js src test",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "prettier": "prettier --write --single-quote --no-semi --trailing-comma es5 --print-width 100 --tab-width 4 --use-tabs \"src/**/*.js\""
   },
   "dependencies": {
     "antd": "^3.7.3",
@@ -27,6 +28,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "husky": "^0.12.0",
+    "prettier": "1.14.0",
     "redbox-react": "^1.4.3",
     "roadhog": "^2.0.0"
   }

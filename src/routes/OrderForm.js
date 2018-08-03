@@ -1,216 +1,210 @@
 import React, { Component } from 'react'
-import { connect } from 'dva';
-import { Steps, Button, Modal } from 'antd';
+import { connect } from 'dva'
+import { Steps, Button, Modal } from 'antd'
 import _ from 'lodash'
-import { translate } from "react-i18next";
+import { translate } from 'react-i18next'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import StepThree from './StepThree'
 import Review from './Review'
 
-import styles from './IndexPage.css';
+import styles from './IndexPage.css'
 import { isValidateStatusNumberPeople, isValidateStatus } from '../utils/isValidation'
 
-const Step = Steps.Step;
-
+const Step = Steps.Step
 
 class OrderForm extends Component {
-    constructor(props){
-        super(props)
+	constructor(props) {
+		super(props)
 
-        this.state = {
-            current:0
-        }
-    }
+		this.state = {
+			current: 0,
+		}
+	}
 
-    next = (current) =>{
-        this.setState({
-            current
-        })
-    }
+	next = current => {
+		this.setState({
+			current,
+		})
+	}
 
-    handleNext = () =>{
-        const current = this.state.current + 1
-        let {t} = this.props
-        let { meal, number_people, restaurant,orderList} = this.props.order.activeRecord
+	handleNext = () => {
+		const current = this.state.current + 1
+		let { t } = this.props
+		let { meal, number_people, restaurant, orderList } = this.props.order.activeRecord
 
-        switch(current){
-            case 1:
-                let data_meal = isValidateStatus(meal, 'meal', t('No Selected'), ['validation_meal','message_meal'])
-                let data_number_people = isValidateStatusNumberPeople(number_people, 'number_people',this.props.t)
-                let payload = {...data_meal,...data_number_people}
-                if (data_meal.validation_meal === 'success' && data_number_people.validation_number_people === 'success'){
-                    this.next(current)
-                }
-                this.props.dispatch({
-                    type: 'order/updateFormInput',
-                    payload,
-                })
-                break;
-            case 2:
-                let data_restaurant = isValidateStatus(restaurant, 'restaurant', t('No Selected'), ['validation_restaurant','message_restaurant'])
-                if (data_restaurant.validation_restaurant === 'success') {
-                    this.next(current)
-                }
-                this.props.dispatch({
-                    type: 'order/updateFormInput',
-                    payload: data_restaurant
-                })
-                break;
-            case 3:
-                if (orderList.length === 0){
-                    Modal.warning({
-                        title: t('Warning'),
-                        content: t('Please select a order!'),
-                    });
-                }else{
-                    this.next(current)
-                }
-                
-                break;
-            default:
-                console.log('renderStepComponent error')
-        }
+		switch (current) {
+			case 1:
+				let data_meal = isValidateStatus(meal, 'meal', t('No Selected'), [
+					'validation_meal',
+					'message_meal',
+				])
+				let data_number_people = isValidateStatusNumberPeople(
+					number_people,
+					'number_people',
+					this.props.t
+				)
+				let payload = { ...data_meal, ...data_number_people }
+				if (
+					data_meal.validation_meal === 'success' &&
+					data_number_people.validation_number_people === 'success'
+				) {
+					this.next(current)
+				}
+				this.props.dispatch({
+					type: 'order/updateFormInput',
+					payload,
+				})
+				break
+			case 2:
+				let data_restaurant = isValidateStatus(restaurant, 'restaurant', t('No Selected'), [
+					'validation_restaurant',
+					'message_restaurant',
+				])
+				if (data_restaurant.validation_restaurant === 'success') {
+					this.next(current)
+				}
+				this.props.dispatch({
+					type: 'order/updateFormInput',
+					payload: data_restaurant,
+				})
+				break
+			case 3:
+				if (orderList.length === 0) {
+					Modal.warning({
+						title: t('Warning'),
+						content: t('Please select a order!'),
+					})
+				} else {
+					this.next(current)
+				}
 
-       
-        
-    }
+				break
+			default:
+				console.log('renderStepComponent error')
+		}
+	}
 
-    prev = () =>{
-        const current = this.state.current - 1
-        this.setState({
-            current
-        })
-    }
+	prev = () => {
+		const current = this.state.current - 1
+		this.setState({
+			current,
+		})
+	}
 
-    renderStepComponent = () =>{
-            switch(this.state.current){
-                case 0:
-                    return (
-                        <StepOne />
-                    )
-                case 1:
-                    return (
-                        <StepTwo />
-                    )
-                case 2:
-                    return (
-                        <StepThree />
-                    )
-                case 3:
-                    return (
-                        <Review />
-                    )
-                default:
-                    console.log('renderStepComponent error')
-            }
-    }
+	renderStepComponent = () => {
+		switch (this.state.current) {
+			case 0:
+				return <StepOne />
+			case 1:
+				return <StepTwo />
+			case 2:
+				return <StepThree />
+			case 3:
+				return <Review />
+			default:
+				console.log('renderStepComponent error')
+		}
+	}
 
-    onSubmit = () =>{
-        let { meal, number_people, restaurant, orderList } = this.props.order.activeRecord
-        let cloneRecord = _.clone(this.props.order.record)
+	onSubmit = () => {
+		let { meal, number_people, restaurant, orderList } = this.props.order.activeRecord
+		let cloneRecord = _.clone(this.props.order.record)
 
-        let splitRestaurant = restaurant.split('-')
-        
-        let newOrderList = orderList.map((item)=>{
-            let dish = item.dish.split('-')
-            return {
-                dish:dish[0],
-                serving:item.serving
-            }
-        })
-       
-       
-       
-       
-       
-        let payload = {
-            meal, number_people, restaurant: splitRestaurant[0], orderList: newOrderList
-        }
-        cloneRecord.push(payload)
+		let splitRestaurant = restaurant.split('-')
 
-        this.props.dispatch({
-            type: 'order/updateRecord',
-            payload: cloneRecord,
-            callback: this.onResetValue
-        })
+		let newOrderList = orderList.map(item => {
+			let dish = item.dish.split('-')
+			return {
+				dish: dish[0],
+				serving: item.serving,
+			}
+		})
 
-    }
+		let payload = {
+			meal,
+			number_people,
+			restaurant: splitRestaurant[0],
+			orderList: newOrderList,
+		}
+		cloneRecord.push(payload)
 
-    onResetValue = ()=>{
-        this.setState({
-            current:0
-        },()=>{
-            this.props.onChangeTab('2')
-        })
-    }
+		this.props.dispatch({
+			type: 'order/updateRecord',
+			payload: cloneRecord,
+			callback: this.onResetValue,
+		})
+	}
 
+	onResetValue = () => {
+		this.setState(
+			{
+				current: 0,
+			},
+			() => {
+				this.props.onChangeTab('2')
+			}
+		)
+	}
 
-  render() {
-      const { t } = this.props;
-      const steps = [
-          { title: t("Step 1") },
-          { title: t("Step 2") },
-          { title: t("Step 3") },
-          { title: t("Review") },
-      ];
-    return (
-        <div className={styles.normal}>
-            <div className={styles.container} >
-                <Steps current={this.state.current}  >
+	render() {
+		const { t } = this.props
+		const steps = [
+			{ title: t('Step 1') },
+			{ title: t('Step 2') },
+			{ title: t('Step 3') },
+			{ title: t('Review') },
+		]
+		return (
+			<div className={styles.normal}>
+				<div className={styles.container}>
+					<Steps current={this.state.current}>
+						{steps.map((Item, i) => {
+							return <Step key={i} title={Item.title} />
+						})}
+					</Steps>
 
-                    {
-                        steps.map((Item,i)=>{
-                            return(
-                                <Step key={i} title={Item.title}  />
-                            )
-                        })
-                    }
-                </Steps>
+					<div style={{ marginTop: 25 }} />
 
-                <div style={{marginTop:25}} >
+					{this.renderStepComponent()}
 
-                </div>
+					<div style={{ marginTop: 20 }}>
+						<div style={{ float: 'left' }}>
+							{this.state.current !== 0 ? (
+								<Button type="primary" onClick={this.prev}>
+									{t('Previous')}
+								</Button>
+							) : null}
+						</div>
 
-                {this.renderStepComponent()}
-
-
-
-                <div style={{marginTop:20}} >
-                    <div style={{float:'left'}} >
-                        {
-                            this.state.current !== 0 ? (
-                                <Button type="primary" onClick={this.prev} >
-                                    {t("Previous")}
-                            </Button>
-                            ) : null
-                        }
-                    </div>
-                    
-                    <div style={{float:'right'}}>
-
-                        {
-                            this.state.current === 3 ? (
-                                <Button type="primary" style={{ marginLeft: 5 }} onClick={this.onSubmit}  >
-                                    {t("Submit")}
-                                </Button>
-                            ): (
-                                <Button type="primary" style={{ marginLeft: 5 }} onClick={this.handleNext} >
-                                        {t("Next")}
-                                </Button>
-                            )
-                        }
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    )
-  }
+						<div style={{ float: 'right' }}>
+							{this.state.current === 3 ? (
+								<Button
+									type="primary"
+									style={{ marginLeft: 5 }}
+									onClick={this.onSubmit}
+								>
+									{t('Submit')}
+								</Button>
+							) : (
+								<Button
+									type="primary"
+									style={{ marginLeft: 5 }}
+									onClick={this.handleNext}
+								>
+									{t('Next')}
+								</Button>
+							)}
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
 }
 
-const mapStateToProps = (state) => ({
-  order:state.order
+const mapStateToProps = state => ({
+	order: state.order,
 })
 
-export default connect(mapStateToProps)(translate("translations")(OrderForm))
+export default connect(mapStateToProps)(translate('translations')(OrderForm))
