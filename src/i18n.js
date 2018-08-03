@@ -36,8 +36,9 @@ i18n.use(LanguageDetector).init({
 				'List of Order': 'List of Order',
 				Dish: 'Dish',
 				Action: 'Action',
-				'Total':'Total',
-				"Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!":"Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!"
+				Total: 'Total',
+				'Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!':
+					'Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!',
 			},
 		},
 		fil: {
@@ -73,8 +74,9 @@ i18n.use(LanguageDetector).init({
 				'List of Order': 'Listahan ng Order',
 				Dish: 'Ulam',
 				Action: 'Aksyon',
-				'Total': 'Kabuuang',
-				"Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!":"Ang kabuuang bilang ng mga pinggan ay dapat mas malaki o katumbas ng bilang ng tao at ang Maximum of 10 ay pinapayagan!"
+				Total: 'Kabuuang',
+				'Total number of dishes should be greater or equal to the number of person and Maximum of 10 is allowed!':
+					'Ang kabuuang bilang ng mga pinggan ay dapat mas malaki o katumbas ng bilang ng tao at ang Maximum of 10 ay pinapayagan!',
 			},
 		},
 	},

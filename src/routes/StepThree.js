@@ -128,7 +128,7 @@ class StepThree extends Component {
 		let dishFiltered = []
 		let total_order = 0
 
-		_.map(orderList,item =>{
+		_.map(orderList, item => {
 			total_order = total_order + item.serving
 		})
 
@@ -209,16 +209,17 @@ class StepThree extends Component {
 									)
 								}),
 								<tr key="total">
-									<td colSpan={2}></td>
-									<td>{t('Total')}: <b>{total_order} </b></td>
-								</tr>
-								]
+									<td colSpan={2} />
+									<td>
+										{t('Total')}: <b>{total_order} </b>
+									</td>
+								</tr>,
+							]
 						) : (
 							<tr>
 								<td colSpan={3}>{t('No Data')}</td>
 							</tr>
 						)}
-						
 					</tbody>
 				</table>
 			</Card>
